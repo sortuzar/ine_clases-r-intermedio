@@ -1,12 +1,23 @@
 
 # Directorios OneDrive ---------------------------------------------------------
 ### OneDrive ###################################################################
-folder_onedrive <- paste0("C:/Users/",
-                          tolower(Sys.info()['user']),
-                          "/OneDrive - Instituto Nacional de Estadisticas")
+folder_usuario <- paste0("C:/Users/",
+                         tolower(Sys.info()['user']))
 
-### Carpeta con bases de datos #################################################
-folder_data_gral <- paste0(folder_onedrive,"/2024/2406_Clases R Intermedio")
+### OneDrive (INE) #############################################################
+folder_onedrive_oficina <- paste0(folder_usuario,"/OneDrive - Instituto Nacional de Estadisticas")
+
+### OneDrive (casa) ############################################################
+folder_onedrive_casa <- paste0(folder_usuario,"/OneDrive")
+
+### Carpeta con bases de datos (INE) ###########################################
+folder_data_gral_oficina <- paste0(folder_onedrive_oficina,"/2024/2406_Clases R Intermedio")
+
+### Carpeta con bases de datos (casa) ##########################################
+folder_data_gral_casa <- paste0(folder_onedrive_casa,"/Documentos/INE/2406_Clases R Intermedio")
+
+### Carpeta con bases de datos (seleccionar) ###################################
+folder_data_gral <- folder_data_gral_casa # reemplazar si trabajo desde la oficina
 
 ### Clases 1-2 #################################################################
 folder_data1 <- paste0(folder_data_gral,"/data_clases1_2")
