@@ -385,14 +385,14 @@ walk(animales, print)
 continentes <- split(gapminder, gapminder$continent)
 
 library(feather)
-files <- paste0("02_funcionales/data/", names(continentes), ".feather")
+files <- paste0(folder_data2, names(continentes), ".feather")
 walk2(continentes, files, write_feather)
 
 
 # 04. Iteración sobre los nombres de una lista ----------------------------
 
-files <- list.files("02_funcionales/data/datos_ene/", full.names = T)
-trimestres <- list.files("02_funcionales/data/datos_ene/") %>% 
+files <- list.files(paste0(folder_data2,"/datos_ene/"), full.names = T)
+trimestres <- list.files(paste0(folder_data2,"/datos_ene/")) %>% 
   str_extract(pattern = "-[[:digit:]]{2}-") %>% 
   str_remove_all("-")
 
@@ -407,7 +407,7 @@ imap(varios_ene, ~.x %>%
        select(1:3, trimestre))
 
 
-list.files("02_funcionales/data/datos_ene/", full.names = T) %>% 
+list.files(paste0(folder_data2,"/datos_ene"), full.names = T) %>% 
   set_names(paste0("trimestre_", str_extract(., "(?<=-)[[:digit:]]{2}(?=-)"))) %>% 
   imap(~read_csv2(.x, guess_max = 80000) %>% 
          mutate(trimestre = .y)) 
