@@ -132,6 +132,8 @@ rm(trimestres,
    files,
    nombres_lista)
 
+### Esto no era parte de la tarea, pero me resultó útil repasarlo ##############
+
 # Cargar BBDD ENE usando pocas líneas de código --------------------------------
 varios_ene <- 
   ### Primero especificar rutas con list.files() ###############################
