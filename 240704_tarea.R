@@ -76,7 +76,8 @@ rm(list=ls())
 ### Crear vector de librerías ##################################################
 librerias <- c("tidyverse",
                "ggplot2", # crear gráficos
-               "feather" # cargar BBDD CASEN
+               "feather", # cargar BBDD CASEN
+               "gapminder" # contiene BBDD que usaremos
                )
 
 ### Definir función para cargar librerías ######################################
@@ -107,6 +108,12 @@ source(paste0(folder_here,"/aux_dirs_input.R"))
 casen <- feather::read_feather(file_casen)
 
 # Definir funciones sum_something() y plot_table() -----------------------------
+### Diapositivas de las funciones ##############################################
+###### Diapositivas sum_something() ######
+###### https://clases-r-intermedio.github.io/2_programacion_funcional/#30
+###### Diapositivas plot_table() ######
+###### https://clases-r-intermedio.github.io/2_programacion_funcional/#32
+
 ### Definir función sum_something() ############################################
 sum_something <- function(data, group_var, var) {
   data %>% 
@@ -139,3 +146,12 @@ plot_table(tabla, region, n,  "Total del ingreso por región" )
 
 ###### Eliminar objeto usado en ejemplo ######
 rm(tabla)
+
+# Replicar primera parte del ejercicio (antes de la tarea) ---------------------
+### Diapositivas ###############################################################
+### https://clases-r-intermedio.github.io/2_programacion_funcional/#71
+
+# EJERCICIO 1 ------------------------------------------------------------------
+### Diapositivas ###############################################################
+### https://clases-r-intermedio.github.io/2_programacion_funcional/#74
+
