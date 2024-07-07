@@ -81,7 +81,157 @@ rm(tabla)
 ### Diapositivas ###############################################################
 ### https://clases-r-intermedio.github.io/2_programacion_funcional/#71
 
+### Crear listado de data frames separados por año #############################
+gapminder_list <- split(gapminder, gapminder$year)
+
+### Usar purrr para generar un gráfico para cada año ###########################
+plots_by_year <- gapminder_list %>% 
+  map(sum_something, continent, pop) %>% 
+  map(plot_table, continent, n, "Población mundial, según continente" )
+
+### Limpiar environment ########################################################
+rm(gapminder_list,
+   plots_by_year)
+
 # EJERCICIO 1 ------------------------------------------------------------------
 ### Diapositivas ###############################################################
 ### https://clases-r-intermedio.github.io/2_programacion_funcional/#74
 
+### Crear listado de data frames separados por año #############################
+gapminder_list <- split(gapminder, gapminder$year)
+
+### Probar código entregado ####################################################
+plot_with_for <- function(tablas){
+  plots <- list(vector(length = length(tablas) ))
+  i <- 1
+  for (plot in tablas) {
+    table <- sum_something(plot, continent, pop)
+    plots[[i]] <- plot_table(table, continent, n, paste("Población mundial, según continente. Año", plot$year[1] )  )
+    i <-  i + 1
+  }
+  return(plots)
+}
+
+plots <- plot_with_for(gapminder_list)
+
+### Crea una función llamada plot_with_purrr que reciba una lista de tablas y devuelva una lista de gráficos
+
+### Veamos bien qué hace el for loops ##########################################
+plot_with_for <- 
+  function(
+    ### El argumento tablas es una LISTA de DATA FRAMES
+    tablas)
+    {
+    ### Abre el environment de la función
+    
+    ### En plots almacena una lista compuesta de un vector de longitud igual a la longitud del argumento tablas
+    plots <- list(vector(length = length(tablas) ))
+    ### Por lo tanto, si gapminder_list tiene una longitud de 12, la lista en plots tendrá una longitud de 12 elementos/vectores
+    
+    ### Se define i como 1
+    i <- 1
+    
+    ### Abre un loop que itera sobre cada data frame en el argumento tablas
+    for (plot in tablas) {
+      ### Crea el objeto table usando la función sum_something()
+      table <- sum_something(
+        ### data=
+        plot, 
+        ### group_var=
+        continent, 
+        ### var=
+        pop
+        ### Cierra sum_something()
+        )
+      
+      ### Guarda en el lugar i dentro de plots el siguiente objeto plot_table
+      plots[[i]] <- plot_table(
+        
+        ### table=
+        table, 
+        ### x_var=
+        continent, 
+        ### y_var=
+        n, 
+        ### input_title=
+        paste("Población mundial, según continente. Año", plot$year[1] )
+        ### Cierra plot_table()
+        )
+      
+      ### Se redefine i como el i actual + 1
+      i <-  i + 1
+    }
+    
+    ### Devuelve el objeto plots
+    return(plots)
+}
+
+plots <- plot_with_for(gapminder_list)
+
+### Limpiar environment ########################################################
+rm(plot_with_for,
+   plots)
+
+### Tener dos listas iterando juntas ###########################################
+year_label_list <- names(gapminder_list)
+
+### Crear un plot individualmente ##############################################
+gapminder_list[["1952"]] %>%
+  ### Crear tabla
+  sum_something(group_var=continent,
+                var=pop) %>%
+  ### Crear plot
+  ggplot(aes(x=continent,
+             y=n)) +
+  geom_bar(stat="identity") + # parámetro fijo
+  labs(title=paste("Población mundial, según continente. Año", 
+                   year_label_list[1]))
+
+### Ahora hagamos la serie completa con map2() #################################
+ej1_prueba <- purrr::map2(
+  .x=gapminder_list,
+  .y=year_label_list,
+  ~sum_something(data=.x,
+                 group_var=continent,
+                 var=pop) %>% 
+    ggplot(aes(x=continent,
+               y=n)) +
+    geom_bar(stat="identity") +
+    labs(title=paste("Población mundial, según continente. Año",
+                     as.character(unique(.y))))
+  )
+
+### Esto nos da una lista de gráficos con el año en el título
+
+### Empaquetar código en una función ###########################################
+plot_with_purrr <- function(
+    ### El argumento tablas toma como input una lista de data frames
+  tablas)
+{
+  ### Abrir environment de la función
+  
+  ### En vec_labels se guardan las etiquetas de año tomadas de tablas
+  vec_labels <- unique(tablas$year)
+  
+  ### Aplicar map() (finalmente es mejor que map2(), pero se conserva arriba para mostrar la comparación)
+  plots <- purrr::map(
+    .x=tablas,
+    ~sum_something(data=.x,
+                   group_var=continent,
+                   var=pop) %>% 
+      ggplot(aes(x=continent,
+                 y=n)) +
+      geom_bar(stat="identity") +
+      labs(title=paste("Población mundial, según continente. Año",
+                       as.character(unique(.x$year)))))
+  
+  ### Devolver plots
+  return(plots)
+}
+
+### Probar función #############################################################
+ej1_resultado <- plot_with_purrr(tablas=gapminder_list)
+
+### Ver los resultados #########################################################
+ej1_resultado[["1952"]]
+ej1_resultado[["1957"]]
