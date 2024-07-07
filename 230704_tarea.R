@@ -121,12 +121,33 @@ nombres_lista <-  imap(varios_ene, ~.y) # iterar varios_ene y obtener su nombre 
 ### Revisar output del último proceso ##########################################
 nombres_lista # (el output también es una lista)
 
-# creamos una columna con el nombre del trimestre en la base de cada trimestre
-imap(varios_ene, ~.x %>% 
+### Podemos crear una columna con el trimestre en cada df usando imap() ########
+imap(varios_ene, ~.x %>%
        mutate(trimestre = .y) %>%
        select(1:3, trimestre))
 
-list.files(paste0(folder_data2,"/datos_ene"), full.names = T) %>% 
-  set_names(paste0("trimestre_", str_extract(., "(?<=-)[[:digit:]]{2}(?=-)"))) %>% 
-  imap(~read_csv2(.x, guess_max = 80000) %>% 
-         mutate(trimestre = .y)) 
+### Limpiar environment ########################################################
+rm(trimestres,
+   varios_ene,
+   files,
+   nombres_lista)
+
+# Cargar BBDD ENE usando pocas líneas de código --------------------------------
+varios_ene <- 
+  ### Primero especificar rutas con list.files() ###############################
+  list.files(paste0(folder_data2,"/datos_ene"), full.names = T) %>% 
+  ### Segundo pegar nombres extrayendo información del trimestre con regex #####
+  set_names(paste0("trimestre_", str_extract(., "(?<=-)[[:digit:]]{2}(?=-)"))) %>%
+  ### Iterar con imap() la carga de cada archivo csv ###########################
+  imap(
+    ###### Cargar CSV ######
+    ~read_csv2(.x, # argumento es .x (primer elemento que varía) 
+               guess_max = 80000) %>%
+      ###### Crear columna de trimestre ######
+      mutate(trimestre = .y
+             # identifica .y y crea una variable llamada 
+             # trimestre en todos los df con el valor .y (segundo elemento que varía) 
+             ) %>% 
+      ###### Reubicar columna de trimestre ######
+      relocate(trimestre,.before=1) # ubica la columna de trimestre al inicio del df
+    )
