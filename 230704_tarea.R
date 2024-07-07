@@ -17,7 +17,7 @@
 ### Adicionalmente, se agrega una funcionalidad que agrega 
 ### al título el año correspondiente.
 ###
-### CODIGO DE REFERENCIA
+### CODIGO DE REFERENCIA (NO CORRER) ###########################################
 gapminder_list <- split(gapminder, gapminder$year)
 plot_with_for <- function(tablas){
   plots <- list(vector(length = length(tablas) ))
@@ -59,7 +59,7 @@ plots <- plot_with_for(gapminder_list)
 ### Es posible que la sintaxis llegue a ser un poco confusa. 
 ### Reflexiona sobre la pertinencia de purrr para tareas de este tipo.
 ###
-### CODIGO DE REFERENCIA
+### CODIGO DE REFERENCIA (NO CORRER) ###########################################
 nested_for <- function(v1, v2) {
   for (x in v1) {
     for (y in v2){
@@ -73,5 +73,60 @@ nested_for(1:3, 5:8)
 rm(list=ls())
 
 # Cargar librerías -------------------------------------------------------------
+### Crear vector de librerías ##################################################
+librerias <- c("tidyverse")
+
+### Definir función para cargar librerías ######################################
+carga_librerias <- function(librerias) {
+  for (i in librerias) {
+    esta_disponible <- require(i, character.only = TRUE, quietly= TRUE)
+    if(esta_disponible){
+      library(i, character.only = TRUE)
+    } else {
+      install.packages(i)
+      library(i, character.only = TRUE)
+    }
+  }
+}
+
+### Cargar librerías usando función ############################################
+carga_librerias(librerias = librerias)
 
 # Definir directorios ----------------------------------------------------------
+### Definir ubicación del proyecto #############################################
+folder_project <- rprojroot::find_rstudio_root_file()
+folder_here <- folder_project
+
+### Definir ubicación del script que contiene las rutas de las BBDD ############
+source(paste0(folder_here,"/aux_dirs_input.R"))
+
+# Cargar BBDD ENE y unir los df en una lista -----------------------------------
+### Encontrar los archivos en el directorio indicado ###########################
+files <- list.files(paste0(folder_data2,"/datos_ene/"), full.names = T)
+
+### Crear vector de trimestres #################################################
+trimestres <- list.files(paste0(folder_data2,"/datos_ene/")) %>% 
+  str_extract(pattern = "-[[:digit:]]{2}-") %>% 
+  str_remove_all("-")
+
+### Crear lista que contiene los df ############################################
+varios_ene <- map(files, ~read_csv2(.x, guess_max = 80000)) # varios_ene tiene las BBDD en una lista
+
+### Poner nombre a cada elemento de la lista usando el vector trimestres #######
+names(varios_ene) <- paste0("trimestre_", trimestres) # ponemos nombres a cada trimestre 
+
+### Iterar el objeto varios_ene para obtener los nombres de elementos ##########
+nombres_lista <-  imap(varios_ene, ~.y) # iterar varios_ene y obtener su nombre (para eso es imap())
+
+### Revisar output del último proceso ##########################################
+nombres_lista # (el output también es una lista)
+
+# creamos una columna con el nombre del trimestre en la base de cada trimestre
+imap(varios_ene, ~.x %>% 
+       mutate(trimestre = .y) %>%
+       select(1:3, trimestre))
+
+list.files(paste0(folder_data2,"/datos_ene"), full.names = T) %>% 
+  set_names(paste0("trimestre_", str_extract(., "(?<=-)[[:digit:]]{2}(?=-)"))) %>% 
+  imap(~read_csv2(.x, guess_max = 80000) %>% 
+         mutate(trimestre = .y)) 
