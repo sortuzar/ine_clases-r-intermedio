@@ -74,7 +74,10 @@ rm(list=ls())
 
 # Cargar librerías -------------------------------------------------------------
 ### Crear vector de librerías ##################################################
-librerias <- c("tidyverse")
+librerias <- c("tidyverse",
+               "ggplot2", # crear gráficos
+               "feather" # cargar BBDD CASEN
+               )
 
 ### Definir función para cargar librerías ######################################
 carga_librerias <- function(librerias) {
@@ -101,3 +104,38 @@ folder_here <- folder_project
 source(paste0(folder_here,"/aux_dirs_input.R"))
 
 # Cargar BBDD CASEN ------------------------------------------------------------
+casen <- feather::read_feather(file_casen)
+
+# Definir funciones sum_something() y plot_table() -----------------------------
+### Definir función sum_something() ############################################
+sum_something <- function(data, group_var, var) {
+  data %>% 
+    group_by(!!enexpr(group_var)) %>% 
+    summarise(n = sum(!!enexpr(var)))
+}
+
+### Probar función sum_something() #############################################
+sum_something(
+  ###### Seleccionar BBDD ######
+  data=casen,
+  ###### Seleccionar variable de agrupación ######
+  group_var=region,
+  ###### Seleccionar variable que vamos a sumar ######
+  var=ytotcor)
+
+### Definir función plot_table() ###############################################
+plot_table <- function(table, x_var, y_var,  input_title ) {
+  ggplot(table, aes(x = !!enexpr(x_var), y = !!enexpr(y_var) )) +
+    geom_bar(stat = "identity") +
+    labs(title = input_title)
+}
+
+### Probar función plot_table() ################################################
+###### Crear objeto con sum_something() (es prerrequisito) ######
+tabla <- sum_something(casen, region, ytotcor)
+
+###### Ejecutar plot_table() sobre el output creado con sum_something() ######
+plot_table(tabla, region, n,  "Total del ingreso por región" )
+
+###### Eliminar objeto usado en ejemplo ######
+rm(tabla)
