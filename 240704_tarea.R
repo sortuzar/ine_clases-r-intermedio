@@ -221,3 +221,9 @@ ej1_resultado <- plot_with_purrr(tablas=gapminder_list)
 ### Ver los resultados #########################################################
 ej1_resultado[["1952"]]
 ej1_resultado[["1957"]]
+
+# EJERCICIO 2 ------------------------------------------------------------------
+### Diapositivas ###############################################################
+### https://clases-r-intermedio.github.io/2_programacion_funcional/#76
+
+### Modificar función plot_table() #############################################
