@@ -2,6 +2,9 @@
 # Clase 3: Manejo de strings y regex --------------------------------------
 # -------------------------------------------------------------------------
 
+# Limpiar environment -----------------------------------------------------
+rm(list=ls())
+
 # 00. Carga de paquetes ---------------------------------------------------
 librerias <- c("tidyverse", "guaguas", "readr")
 
@@ -19,10 +22,18 @@ carga_librerias <- function(librerias) {
 
 carga_librerias(librerias = librerias)
 
+# Fijar directorios -------------------------------------------------------
+### Ubicación del proyecto ################################################
+folder_project <- rprojroot::find_rstudio_root_file()
+folder_here <- paste0(folder_project)
+
+### Bases de datos ########################################################
+source(paste0(folder_project,"/aux_dirs_input.R"))
+
 
 # 01. Cargar datos --------------------------------------------------------
 
-telefonos <- read_csv("03_regex/data/telefonos.csv")
+telefonos <- read_csv(file_telefonos)
 
 # 02. Comportamiento de strings en R --------------------------------------
 
