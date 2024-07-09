@@ -33,7 +33,7 @@ carga_librerias(librerias = librerias)
 # Fijar directorios ------------------------------------------------------------
 ### Ubicación del proyecto #####################################################
 folder_project <- rprojroot::find_rstudio_root_file()
-folder_here <- paste0(folder_project,"/02_funcionales")
+folder_here <- paste0(folder_project)
 
 ### Bases de datos #############################################################
 source(paste0(folder_project,"/aux_dirs_input.R"))
