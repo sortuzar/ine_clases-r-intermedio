@@ -100,23 +100,7 @@ rm(gapminder_list,
 ### Crear listado de data frames separados por año #############################
 gapminder_list <- split(gapminder, gapminder$year)
 
-### Probar código entregado ####################################################
-plot_with_for <- function(tablas){
-  plots <- list(vector(length = length(tablas) ))
-  i <- 1
-  for (plot in tablas) {
-    table <- sum_something(plot, continent, pop)
-    plots[[i]] <- plot_table(table, continent, n, paste("Población mundial, según continente. Año", plot$year[1] )  )
-    i <-  i + 1
-  }
-  return(plots)
-}
-
-plots <- plot_with_for(gapminder_list)
-
-### Crea una función llamada plot_with_purrr que reciba una lista de tablas y devuelva una lista de gráficos
-
-### Veamos bien qué hace el for loops ##########################################
+### Veamos bien qué hace el for loops que nos entregan #########################
 plot_with_for <- 
   function(
     ### El argumento tablas es una LISTA de DATA FRAMES
@@ -168,12 +152,12 @@ plot_with_for <-
 
 plots <- plot_with_for(gapminder_list)
 
+### OBJETIVO:
+### Crea una función llamada plot_with_purrr que reciba una lista de tablas y devuelva una lista de gráficos
+
 ### Limpiar environment ########################################################
 rm(plot_with_for,
    plots)
-
-### Tener dos listas iterando juntas ###########################################
-year_label_list <- names(gapminder_list)
 
 ### Crear un plot individualmente ##############################################
 gapminder_list[["1952"]] %>%
@@ -185,12 +169,12 @@ gapminder_list[["1952"]] %>%
              y=n)) +
   geom_bar(stat="identity") + # parámetro fijo
   labs(title=paste("Población mundial, según continente. Año", 
-                   year_label_list[1]))
+                   as.character(unique(gapminder_list[["1952"]]$year)),
+                   " (PLOT HECHO INDIVIDUALMENTE)"))
 
-### Ahora hagamos la serie completa con map2() #################################
-ej1_prueba <- purrr::map2(
+### Ahora hagamos la serie completa con map() ##################################
+ej1_prueba <- purrr::map(
   .x=gapminder_list,
-  .y=year_label_list,
   ~sum_something(data=.x,
                  group_var=continent,
                  var=pop) %>% 
@@ -198,10 +182,14 @@ ej1_prueba <- purrr::map2(
                y=n)) +
     geom_bar(stat="identity") +
     labs(title=paste("Población mundial, según continente. Año",
-                     as.character(unique(.y))))
+                     as.character(unique(.x$year)),
+                     " (PLOT HECHO CON MAP,\nSIN EMPAQUETAR EN UNA FUNCION)"))
   )
 
+### Ver los resultados #########################################################
 ### Esto nos da una lista de gráficos con el año en el título
+ej1_prueba[["1952"]]
+ej1_prueba[["1957"]]
 
 ### Empaquetar código en una función ###########################################
 plot_with_purrr <- function(
@@ -210,10 +198,7 @@ plot_with_purrr <- function(
 {
   ### Abrir environment de la función
   
-  ### En vec_labels se guardan las etiquetas de año tomadas de tablas
-  vec_labels <- unique(tablas$year)
-  
-  ### Aplicar map() (finalmente es mejor que map2(), pero se conserva arriba para mostrar la comparación)
+  ### Aplicar map()
   plots <- purrr::map(
     .x=tablas,
     ~sum_something(data=.x,
@@ -223,7 +208,8 @@ plot_with_purrr <- function(
                  y=n)) +
       geom_bar(stat="identity") +
       labs(title=paste("Población mundial, según continente. Año",
-                       as.character(unique(.x$year)))))
+                       as.character(unique(.x$year)),
+                       " (PLOT HECHO CON MAP,\nEMPAQUETADO EN UNA FUNCION)")))
   
   ### Devolver plots
   return(plots)
