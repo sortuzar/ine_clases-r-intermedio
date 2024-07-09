@@ -293,3 +293,64 @@ nested_for(1:3, 5:8)
 
 ### El ejercicio consiste en escribir una función llamada nested_map()...
 ### ...que utilice una sintaxis de purrr. 
+
+### Definir función nestep_map() ###############################################
+nested_map <- function(
+    ### Argumento 1
+    vectorX,
+    ### Argumento 2
+    vectorY
+    ){
+  ### Abrir ambiente de la función 
+  
+  ### Función de segundo orden
+  valorX <- map(
+    ### Argumento 1
+    .x=vectorX,
+    ### Función
+    function(x){
+      ### Habilitar otro environment de función
+      
+      ### Habilitar comentarios
+      cat(paste0("\nPara el valor ",as.character(unique(x)),"...\n"))
+      
+      ### Función de primer orden
+      valorY <- map(
+        ### Argumento 2
+        .x=vectorY,
+        ### Función
+        function(y){
+          ### Habilitar otro environment de función más
+          
+          ### Habilitar comentarios
+          cat(paste0("\n...asigna el valor ",as.character(unique(y)),"\n"))
+          
+          ### Crear combinación de X e Y
+          combinacion_x_y <- paste(x,y)
+          
+          ### Imprime combinación de X e Y
+          print(combinacion_x_y)
+          
+          ### Cerrar environment de función de primer orden
+          }
+      )
+      
+      ### Cerrar environment de función de segundo orden
+    }
+  )
+  
+  ### Cerrar environment de función nested_map()
+  }
+
+### Probar función nested_map() ################################################
+nested_map(1:3, 5:8)
+
+### Probar con vectores de longitud muy diferente ##############################
+nested_map(1:3,1:30)
+
+### Probar con vectores de distinta naturaleza #################################
+nested_map(c("a","b","c","d"),
+           1:10)
+
+nested_map(rep("ola",10),
+           rep("ola",10))
