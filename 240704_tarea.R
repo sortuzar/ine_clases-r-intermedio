@@ -227,3 +227,45 @@ ej1_resultado[["1957"]]
 ### https://clases-r-intermedio.github.io/2_programacion_funcional/#76
 
 ### Modificar función plot_table() #############################################
+plot_table_mod <- function(
+    table, 
+    x_var, 
+    y_var, 
+    input_title,
+    subtitulo) {
+  ggplot(table, 
+         aes(x = !!enexpr(x_var), 
+             y = !!enexpr(y_var))) +
+    geom_bar(stat = "identity") +
+    labs(title = input_title,
+         subtitle = subtitulo)
+}
+
+### Crear versión modificada de plot_with_purrr() ##############################
+plot_with_purrr_mod <- function(
+    ### El argumento tablas toma como input una lista de data frames
+  tablas)
+  {
+  ### Abrir environment de la función
+  
+  ### Aplicar map()
+  plots <- purrr::map(
+    .x=tablas,
+    ~sum_something(data=.x,
+                   group_var=continent,
+                   var=pop) %>% 
+      plot_table_mod(x_var=continent,
+                     y_var=n,
+                     input_title="Población mundial, según continente",
+                     subtitulo=paste0(as.character(unique(.x$year)),
+                                      " (AHORA EL AÑO VA EN EL SUBTITULO)")))
+  ### Devolver plots
+  return(plots)
+}
+
+### Aplicar función modificada #################################################
+ej2_resultado <- plot_with_purrr_mod(tablas=gapminder_list)
+
+### Ver los resultados #########################################################
+ej2_resultado[["1952"]]
+ej2_resultado[["1957"]]
