@@ -30,6 +30,7 @@ folder_data2 <- paste0(folder_data_gral,"/data_clases3_4")
 
 ### Clases 5-6 #################################################################
 folder_data3 <- paste0(folder_data_gral,"/data_clases5_6")
+file_telefonos <- paste0(folder_data3,"/telefonos.csv")
 
 ### Clases 7-8 #################################################################
 folder_data4 <- paste0(folder_data_gral,"/data_clases7_8")
