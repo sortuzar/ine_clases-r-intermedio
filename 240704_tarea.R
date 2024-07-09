@@ -269,3 +269,27 @@ ej2_resultado <- plot_with_purrr_mod(tablas=gapminder_list)
 ### Ver los resultados #########################################################
 ej2_resultado[["1952"]]
 ej2_resultado[["1957"]]
+
+# EJERCICIO 3 ------------------------------------------------------------------
+### Diapositivas ###############################################################
+### https://clases-r-intermedio.github.io/2_programacion_funcional/#77
+
+### Revisar función asignada ###################################################
+nested_for <- function(v1, v2) {
+  for (x in v1) {
+    for (y in v2){
+      print(paste(x, y))
+    }
+  }
+}
+nested_for(1:3, 5:8)
+
+### Comentarios:
+### La función utiliza dos loops for anidados
+### Así, a cada valor de X le asigna cada uno de los valores de Y
+### Como un for está anidado en el otro, no es necesario que X e Y tengan la...
+### ...misma longitud, ya que A CADA elemento de X se asignan TODOS los...
+### ...elementos de Y
+
+### El ejercicio consiste en escribir una función llamada nested_map()...
+### ...que utilice una sintaxis de purrr. 
