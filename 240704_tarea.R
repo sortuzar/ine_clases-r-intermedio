@@ -165,12 +165,11 @@ gapminder_list[["1952"]] %>%
   sum_something(group_var=continent,
                 var=pop) %>%
   ### Crear plot
-  ggplot(aes(x=continent,
-             y=n)) +
-  geom_bar(stat="identity") + # parámetro fijo
-  labs(title=paste("Población mundial, según continente. Año", 
-                   as.character(unique(gapminder_list[["1952"]]$year)),
-                   " (PLOT HECHO INDIVIDUALMENTE)"))
+  plot_table(x_var=continent,
+             y_var=n,
+             input_title=paste("Población mundial, según continente. Año", 
+                               as.character(unique(gapminder_list[["1952"]]$year)),
+                               "\n(PLOT HECHO INDIVIDUALMENTE)"))
 
 ### Ahora hagamos la serie completa con map() ##################################
 ej1_prueba <- purrr::map(
@@ -178,12 +177,11 @@ ej1_prueba <- purrr::map(
   ~sum_something(data=.x,
                  group_var=continent,
                  var=pop) %>% 
-    ggplot(aes(x=continent,
-               y=n)) +
-    geom_bar(stat="identity") +
-    labs(title=paste("Población mundial, según continente. Año",
-                     as.character(unique(.x$year)),
-                     " (PLOT HECHO CON MAP,\nSIN EMPAQUETAR EN UNA FUNCION)"))
+    plot_table(x_var=continent,
+               y_var=n,
+               input_title=paste("Población mundial, según continente. Año",
+                                 as.character(unique(.x$year)),
+                                 "\n(PLOT HECHO CON MAP, SIN EMPAQUETAR EN UNA FUNCION)"))
   )
 
 ### Ver los resultados #########################################################
@@ -204,12 +202,11 @@ plot_with_purrr <- function(
     ~sum_something(data=.x,
                    group_var=continent,
                    var=pop) %>% 
-      ggplot(aes(x=continent,
-                 y=n)) +
-      geom_bar(stat="identity") +
-      labs(title=paste("Población mundial, según continente. Año",
-                       as.character(unique(.x$year)),
-                       " (PLOT HECHO CON MAP,\nEMPAQUETADO EN UNA FUNCION)")))
+      plot_table(x_var=continent,
+                 y_var=n,
+                 input_title=paste("Población mundial, según continente. Año",
+                                   as.character(unique(.x$year)),
+                                   "\n(PLOT HECHO CON MAP,\nEMPAQUETADO EN UNA FUNCION)")))
   
   ### Devolver plots
   return(plots)

@@ -40,24 +40,38 @@ telefonos <- read_csv(file_telefonos)
 # R va a escapar ciertos caracteres especiales
 (mi_string <- "hola, soy una string")
 (mi_string <- 'hola, yo también soy una string')
-(mi_string <- "quiero incluir "comillas" dentro de una string")
 
-(mi_string <- 'quiero incluir "comillas" dentro de una string')
-(mi_string <- "quiero incluir \"comillas\" dentro de una string")
-writeLines(mi_string)
+### asignar entre paréntesis se hace la asignación y además imprime el objeto que guardamos
+
+(mi_string <- "quiero incluir "comillas" dentro de una string") # no funciona, R trata comillas como un objeto que no encuentra en el environment
+
+(mi_string <- 'quiero incluir "comillas" dentro de una string') # manera 1: alternar entre comillas simples y comillas dobles
+### da lo mismo cuáles comillas van afuera y cuáles adentro, se recomienda estandarizar una manera por orden mental y evitar errores tontos
+
+(mi_string <- "quiero incluir \"comillas\" dentro de una string") # manera 2: backslash \ permite distinguir entre símbolo como símbolo o símbolo como expresión regular (puntos, paréntesis, etc)
+print(mi_string)
+
+writeLines(mi_string) # writeLines() muestra cómo se debería ver el texto, lo imprime como expresión
 
 # Existen otros caracteres que al escaparlos hacen otras cosas en el texto
-(mi_string <- "quiero que mi string se \ndespliegue en distintas líneas")
+(mi_string <- "quiero que mi string se \ndespliegue en distintas líneas") # imprimir el string incluye los saltos de línea como texto
+writeLines(mi_string) # si quiero que ejecute la función del slash-n tengo que ocupar writeLines, parse, etc., algo que entregue la expresión
+
+(mi_string <- "quiero \t agregar \t \"tabs\" \na mi \tstring") #\tabs entrega un espacio más grande dentro del texto
 writeLines(mi_string)
 
-(mi_string <- "quiero \t agregar \t \"tabs\" \na mi \tstring")
-writeLines(mi_string)
+ejemplo <- c("\"", "\\") # tengo que usar \ para escapar el \
+print(ejemplo)
+writeLines(ejemplo) # escapa la comilla en el primer vector y escapa el \ en el segundo vector
 
-ejemplo <- c("\"", "\\")
-writeLines(ejemplo)
+# regex permite generalizar la búsqueda de ciertos textos para identificarlos con cierta independencia de maneras particulares en que se ingresaron
 
+# permiten describir patrones en un conjunto de texto
 
 # 04. Equivalencia de stringr con R base -----------------------------------
+### ocupamos librería stringr
+### stringi es una función diseñada para ser comprehensiva
+### stringr toma las funciones más relevantes (49 de 256) y las hace más amigables para el uso cotidiano de R
 
 # str_length para ver el largo de los caracteres
 frutas = c("mazana", "naranja", "uva", "platano", "pera", NA)
@@ -72,31 +86,53 @@ paste(c("x", "y", "z"), collapse = ", ")
 # 05. Trabajo con string r ------------------------------------------------
 
 # str_extract para extraer una cadena de texto
-str_extract("Paseo Bulnes 418", pattern = "\\d+")
+str_extract("Paseo Bulnes 418", pattern = "\\d+") # dígitos - todos los dígitos (extensión de 1 o más), 
+# refiere a la extensión de la \\d que definí antes
 
 # str_replace para remover o reemplazar cadenas de texto
 direcciones <- c("Avenida Libertador Bernardo O'Higgins     10  58" , 
-                 "Call.e Morandé 801", "Calle Paseo Bulnes     2018")
+                 "Call.e Morandé 801", 
+                 "Calle Paseo Bulnes     2018")
+
+### podemos editar aspectos de estos vectores usando funciones como str_replace
 str_replace_all(direcciones, pattern = c("\\s\\d+"), replacement = "")
+# reemplaza todos los espacios seguidos por un número por un vacío
+# pero no elimina todos los espacios
+# eso se debe a que no definimos la longitud del número de espacios que nosotros
+# queremos eliminar (no le dijimos 1, 5, 0 o más, etc.)
+# solamente definimos espacio
+
 str_replace_all(direcciones, pattern = c("\\s+\\d+"), replacement = "")
+# con esto subsanamos ese problema: eliminar espacios que tengan una longitud de 1 o más
 
 # Otra forma de remover
-str_extract(direcciones, pattern = "\\D+")
+str_extract(direcciones, pattern = "\\D+") # D mayúscula significa distinto de un dígito (distinto de \d)
+# no elimino lo que no quiero sino que extraigo lo que sí quiero:
+# filtro todo lo que no es un número o más de un número
+# extraigo todo aquello que sea distinto de una cadena de uno o más números
 
 # Eliminar palabras especificas
 str_replace(direcciones, pattern = "Calle|Avenida", replacement = "")
+# identifica las expresiones Calle o Avenida y reemplázalas por nada
+# | significa esto o esto otro, incluye ambos casos
+# problema: Call.e no lo considera como parte de la expresión que quiero eliminar
+# además deja el espacio en blanco
 
 # Como pasaje también
 str_replace(direcciones , pattern = "^\\w+\\s", replacement = "")
-
+# ^ se denomina ancla
+# voy a buscar ese patrón AL PRINCIPIO DE LA CADENA DE TEXTO
+# R se detiene en el primero que hace un match con la condición o patrón que yo especifico
+# yo puedo forzar que esa búsqueda se haga desde el inicio de la cadena de texto
 
 
 # 06. Expresiones regulares -----------------------------------------------
 
 frutas <- c("mazana", "naranja", "uva", "platano", "pera")
 
-# Consultar por cadenas completas
+# Consultar por cadenas completas: ¿las strings contienen una string completa?
 str_match(frutas, pattern = "uva")
+# str_match deja con NA aquello que no coincide con el patrón que definí, y si coincide me entrega ese patrón
 
 # Consultar por patrón en cualquier lugar del texto
 str_view(frutas, pattern = "an", html = TRUE)
@@ -104,7 +140,7 @@ str_view(frutas, pattern = "an", html = TRUE)
 # Rastrear strings con un caracter especial
 nombres = c("maria", "mario", "camilo", "camila")
 
-str_detect(nombres, pattern = "mari(o|a)")
+str_detect(nombres, pattern = "mari(o|a)") # busca textos que coincidan con mari_o o mari_a 
 nombres[str_detect(nombres, pattern = "mari(o|a)")]
 # 07. Anclas --------------------------------------------------------------
 
@@ -113,12 +149,18 @@ str_detect(nombres, pattern = "^c")
 
 # Ancla de término si queremos nombres que terminen en o
 str_detect(nombres, pattern = "o$")
+# en vezde usar el gorrito con ancla al inicio del string, ocupo el $ que pone el ancla al final del string
+
 
 nombres = c("maria", "mario.", "camilo", "camila.")
-str_detect(nombres, pattern = "\\.")
+str_detect(nombres, pattern = "\\.") # detectar los puntos
+# el punto es un símbolo que forma parte de regex entonces para usarlo como símbolo lo tengo que escapar
 
-str_view(nombres, ".+m", html = TRUE)
-str_view(nombres, ".*m", html = TRUE)
+str_view(nombres, ".+m", html = FALSE) # no detecta a mario o maría
+str_view(nombres, ".*m", html = FALSE) # si reemplazo el + por un * entiende que es 0 o más, entonces puede estar al inicio
+# el + presupone que efectivamente haya ALGO, no considera que no haya NADA
+# el * no presupone que haya algo
+
 # EJERCICIO 1 -------------------------------------------------------------
 # ejemplo
 
