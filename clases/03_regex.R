@@ -25,10 +25,10 @@ carga_librerias(librerias = librerias)
 # Fijar directorios -------------------------------------------------------
 ### Ubicación del proyecto ################################################
 folder_project <- rprojroot::find_rstudio_root_file()
-folder_here <- paste0(folder_project)
+folder_here <- paste0(folder_project,"/clases")
 
 ### Bases de datos ########################################################
-source(paste0(folder_project,"/aux_dirs_input.R"))
+source(paste0(folder_project,"/auxiliar/aux_dirs_input.R"))
 
 
 # 01. Cargar datos --------------------------------------------------------
@@ -165,11 +165,100 @@ str_view(nombres, ".*m", html = FALSE) # si reemplazo el + por un * entiende que
 # ejemplo
 
 guaguas %>% 
-  filter(str_detect(nombre, pattern = "eta")) %>%
+  filter(str_detect(nombre, pattern = "eta")) %>% # como ocupa true/false lo podemos usar como condicional
   count(nombre)
+# Si existiera "Etalia" no lo detectaría porque regex es case-sensitive, no le hemos indicado que sea indiferente a las mayúsculas o minúsculas
+
+guaguas %>% 
+  filter(str_detect(nombre, pattern = "(e|é|ê|E|É|Ê)ta")) %>% # como ocupa true/false lo podemos usar como condicional
+  count(nombre) # aquí un ejemplo que incorpora más expresiones
+
 
 # 1 Tabular los nombres solo de las mujeres que tienen un nombre terminado en "o" nacidas el mismo año que tú.
+anio_nacimiento <- 1991
 
+guaguas %>% 
+  filter(
+    # Filtrar por condiciones copulativas
+    # Condición 1: Nombre terminado en o
+    str_detect(nombre, pattern = "o$")
+    # Condición 2: es mujer
+    &sexo%in%"F"
+    # Condición 3: nació en 1991
+    &anio%in%anio_nacimiento) %>% 
+  count(nombre) # = a group_by, summarise, n
+
+# 2 Tabular los nombres solo de los hombres que tienen un nombre terminado en "a" nacidos el mismo año que tú.
+anio_nacimiento <- 1991
+
+guaguas %>% 
+  filter(
+    # Filtrar por condiciones copulativas
+    # Condición 1: Nombre terminado en a
+    str_detect(nombre, pattern = "a$")
+    # Condición 2: es mujer
+    &sexo%in%"M"
+    # Condición 3: nació en 1991
+    &anio%in%anio_nacimiento) %>% 
+  count(nombre)
+
+# 3 Nombres de personas que su nombre termine con "e", con o sin acento, nacidas el mismo año que tú.
+anio_nacimiento <- 1991
+
+guaguas %>% 
+  filter(
+    # Filtrar por condiciones copulativas
+    # Condición 1: Nombre terminado en e (con o sin acento)
+    str_detect(nombre, pattern = "(e|é)$")
+    # Condición 2: nació en 1991
+    &anio%in%anio_nacimiento) %>% 
+  count(nombre)
+
+# 4.1 Primero, separa la base guaguas en una lista que contenga un data frame para cada año (anio).
+guaguas_list <- split(guaguas, guaguas$anio)
+
+# 4.2 Construye una función que cree dos nuevas variables en un data frame:
+# "first_letters", que contenga las primeras 2 letras de cada nombre y 
+# "last_letters", que contenga las últimas 2 letras de cada nombre.
+
+nombrewawa <- function(
+    wawadata,wawanombre)
+{
+  wawadata %>% 
+    mutate(first_letters=str_extract(string=!!enexpr(wawanombre),
+                                     pattern="[a-z|A-Z|á|é|í|ó|ú]{2}")) %>% 
+    mutate(last_letters=str_extract(string=!!enexpr(wawanombre),
+                                    pattern="[a-z|A-Z|á|é|í|ó|ú]{2}$"))
+}
+
+nombrewawa(wawadata=guaguas,
+           wawanombre=nombre)
+
+#mapwawa <- map(.x=guaguas_list,
+#               .f=nombrewawa(wawadata=.x,
+#                             wawanombre=nombre))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 Tabular los nombres solo de las mujeres que tienen un nombre terminado en "o" nacidas el mismo año que tú.
 guaguas %>% 
   filter(str_detect(nombre, pattern = "o$") & str_detect(sexo, "^F$") & str_detect(anio, "2001")) %>% 
   count(nombre)
@@ -268,6 +357,54 @@ telefonos %>%
   count(ciudad)
 
 # EJERCICIO 3 -------------------------------------------------------------
+#¿Cómo lo harían para homologar la ciudad en una variable limpia?
+sort(na.omit(unique(telefonos$ciudad)))
+
+telefonos <- telefonos %>% 
+  mutate(ciudad_clean=case_when(str_detect(string=ciudad,
+                                           pattern="(?i)(valpara[ií]so)")
+                                ~"valparaiso",
+                                str_detect(string=ciudad,
+                                           pattern="(?i)(quilpu[eé])")
+                                ~"quilpue",
+                                str_detect(string=ciudad,
+                                           pattern="(?i)([La]*Serena)")
+                                ~"la serena",
+                                str_detect(string=ciudad,
+                                           pattern="(?i)(olmu[eé])")
+                                ~"olmue",
+                                TRUE~NA))
+
+telefonos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #¿Cómo lo harían para homologar la ciudad en una variable limpia?
 telefonos %>% 
