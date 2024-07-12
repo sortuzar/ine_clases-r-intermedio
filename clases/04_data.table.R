@@ -1,8 +1,11 @@
-rm(list=ls())
-
 
 # Sesión 04. data.table ---------------------------------------------------
 
+# Limpiar environment -----------------------------------------------------
+rm(list=ls())
+
+# Cargar directorios ------------------------------------------------------
+source(paste0(rprojroot::find_rstudio_root_file(),"/auxiliar/aux_dirs_input.R"))
 
 # Cargar paquetes ---------------------------------------------------------
 
@@ -10,7 +13,6 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse,
                data.table,
                tictoc)
-
 
 # Importar y exportar datos con data.table --------------------------------
 
