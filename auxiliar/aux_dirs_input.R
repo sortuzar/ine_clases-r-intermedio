@@ -34,3 +34,6 @@ file_telefonos <- paste0(folder_data3,"/telefonos.csv")
 
 ### Clases 7-8 #################################################################
 folder_data4 <- paste0(folder_data_gral,"/data_clases7_8")
+file_censo2017viv <- paste0(folder_data4,"/microdato_censo2017-viviendas/Microdato_Censo2017-Viviendas.csv")
+file_censo2017hog <- paste0(folder_data4,"/microdato_censo2017-hogares/Microdato_Censo2017-Hogares.csv")
+file_censo2017per <- paste0(folder_data4,"/csv-personas-censo-2017/csv-personas-censo-2017/Microdato_Censo2017-Personas.csv")
