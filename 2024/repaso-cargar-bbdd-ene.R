@@ -22,19 +22,32 @@ carga_librerias <- function(librerias) {
 carga_librerias(librerias = librerias)
 
 # Definir directorios ----------------------------------------------------------
-### Definir ubicación del proyecto #############################################
-folder_project <- rprojroot::find_rstudio_root_file()
-folder_here <- folder_project
-
-### Definir ubicación del script que contiene las rutas de las BBDD ############
-source(paste0(folder_here, "/aux_dirs_input.R"))
+### Definir ubicación del directorio local #####################################
+carpeta_proyecto <- rprojroot::find_rstudio_root_file()
+carpeta_aqui <- paste(carpeta_proyecto, "2024", sep = "/")
+carpeta_datos <- paste(carpeta_aqui, "data", sep = "/")
 
 # Cargar BBDD ENE y unir los df en una lista -----------------------------------
 ### Encontrar los archivos en el directorio indicado ###########################
-files <- list.files(paste0(folder_data2, "/datos_ene/"), full.names = T)
+carpeta_datos_ene <-
+  paste(
+    carpeta_datos,
+    "datos_ene",
+    sep = "/"
+  )
+
+files <-
+  list.files(
+    path = carpeta_datos_ene,
+    full.names = T,
+    recursive = FALSE
+  )
 
 ### Crear vector de trimestres #################################################
-trimestres <- list.files(paste0(folder_data2, "/datos_ene/")) %>%
+trimestres <-
+  list.files(
+    path = carpeta_datos_ene
+  ) %>%
   str_extract(pattern = "-[[:digit:]]{2}-") %>%
   str_remove_all("-")
 
@@ -68,7 +81,7 @@ rm(
 # Cargar BBDD ENE usando pocas líneas de código --------------------------------
 varios_ene <-
   ### Primero especificar rutas con list.files() ###############################
-  list.files(paste0(folder_data2, "/datos_ene"), full.names = T) %>%
+  list.files(carpeta_datos_ene, full.names = T) %>%
   ### Segundo pegar nombres extrayendo información del trimestre con regex #####
   set_names(paste0("trimestre_", str_extract(., "(?<=-)[[:digit:]]{2}(?=-)"))) %>%
   ### Iterar con imap() la carga de cada archivo csv ###########################
