@@ -105,9 +105,8 @@ gapminder_list <- split(gapminder, gapminder$year)
 
 ### Veamos bien qué hace el for loops que nos entregan #########################
 plot_with_for <-
-  function(
-      ### El argumento tablas es una LISTA de DATA FRAMES
-      tablas) {
+  function( ### El argumento tablas es una LISTA de DATA FRAMES
+           tablas) {
     ### Abre el environment de la función
 
     ### En plots almacena una lista compuesta de un vector de longitud igual a la longitud del argumento tablas
