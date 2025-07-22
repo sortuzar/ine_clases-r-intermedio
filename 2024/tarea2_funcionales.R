@@ -32,14 +32,19 @@ carga_librerias(librerias = librerias)
 
 # Definir directorios ----------------------------------------------------------
 ### Definir ubicación del proyecto #############################################
-folder_project <- rprojroot::find_rstudio_root_file()
-folder_here <- paste0(folder_project, "/2024")
-
-### Definir ubicación del script que contiene las rutas de las BBDD ############
-source(paste0(folder_here, "/auxiliar/aux_dirs_input.R"))
+carpeta_proyecto <- rprojroot::find_rstudio_root_file()
+carpeta_aqui <- paste0(carpeta_proyecto, "/2024")
+carpeta_data <- paste0(carpeta_aqui, "/data")
 
 # Cargar BBDD CASEN ------------------------------------------------------------
-casen <- feather::read_feather(file_casen)
+casen <-
+  feather::read_feather(
+    paste(
+      carpeta_data,
+      "casen_2020_edit.feather",
+      sep = "/"
+    )
+  )
 
 # Definir funciones sum_something() y plot_table() -----------------------------
 ### Diapositivas de las funciones ##############################################
