@@ -10,6 +10,6 @@ Clases disponibles en:
 
 - [Evaluaciones no estándar y programación funcional](https://clases-r-intermedio.github.io/2_programacion_funcional/#1)
 
-- [Expresiones regulares](lhttps://clases-r-intermedio.github.io/3_strings_regex/#1)
+- [Expresiones regulares](https://clases-r-intermedio.github.io/3_strings_regex/#1)
 
 - [Manipulación de grandes volúmenes de datos con data.table](https://clases-r-intermedio.github.io/4_data.table/#1)
